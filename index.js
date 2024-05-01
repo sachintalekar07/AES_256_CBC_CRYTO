@@ -1,15 +1,16 @@
 'use strict'
 
+require('dotenv').config()
 const crypto = require('crypto')
 const randomString = require('randomstring')
 
 const CRYPTOGRAPHY_CONFIG = { ALGO: 'aes-256-cbc', KEY: process.env.PROJECT_ENCRYPTION_KEY || '0123456789abcdef0123456789abcdef' }
 
-let { ALGO, KEY } = CRYPTOGRAPHY_CONFIG
+const { ALGO, KEY } = CRYPTOGRAPHY_CONFIG
 
 const encrypt = (data, userKey) => {
-  const thisKEY = userKey ? userKey : KEY
-  console.log("🚀 ~ encrypt ~ data:", data)
+  const thisKEY = userKey || KEY
+
   const iv = randomString.generate(16)
   const rawCipherData = crypto.createCipheriv(ALGO, thisKEY, iv)
   let cipherText = rawCipherData.update(JSON.stringify(data), 'utf8', 'hex')
@@ -18,10 +19,8 @@ const encrypt = (data, userKey) => {
 }
 
 const decrypt = (iv, data, userKey) => {
-  console.log("🚀 ~ decrypt ~ data:", data)
-  console.log("🚀 ~ decrypt ~ iv:", iv)
-  const thisKEY = userKey ? userKey : KEY
-  if (typeof iv === 'object') return `iv can't be object, it should be string.` 
+  const thisKEY = userKey || KEY
+  if (typeof iv === 'object') return 'iv can\'t be object, it should be string.'
   if (iv === null || iv === undefined || iv === '') return 'Invalid iv to decrypt'
   if (data === null || data === undefined || data === '' || data === '') return 'Invalid data to decrypt'
   const decryptedData = crypto.createDecipheriv(ALGO, thisKEY, iv)
