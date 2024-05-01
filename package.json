@@ -1,25 +1,38 @@
 {
-  "name": "aes-256-cbc-cryptography",
+  "name": "aes-256-cbc-crypto",
   "version": "1.0.0",
-  "description": "A simple encryption and decryption module for your applications.",
+  "description": "A Node.js module for AES-256-CBC encryption and decryption, ensuring secure data handling.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "standard --fix"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/belle-vie-cryptography.git"
+    "url": "git+https://github.com/sachintalekar07/AES_256_CBC_CRYTO.git"
   },
-  "author": "Your Name <you@example.com>",
+  "keywords": [
+    "crypto",
+    "AES-256-CBC",
+    "encryption",
+    "security",
+    "cryptography"
+  ],
+  "author": "Sachin Talekar",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sachintalekar07/AES_256_CBC_CRYTO/issues"
+  },
+  "homepage": "https://github.com/sachintalekar07/AES_256_CBC_CRYTO#readme",
   "dependencies": {
-    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "randomstring": "^1.2.1"
   },
-  "bugs": {
-    "url": "https://github.com/yourusername/belle-vie-cryptography/issues"
+  "devDependencies": {
+    "standard": "^16.0.3"
   },
-  "homepage": "https://github.com/yourusername/belle-vie-cryptography#readme"
+  "engines": {
+    "node": ">=14.17.0"
+  }
 }

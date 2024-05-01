@@ -4,29 +4,55 @@ require('dotenv').config()
 const crypto = require('crypto')
 const randomString = require('randomstring')
 
-const CRYPTOGRAPHY_CONFIG = { ALGO: 'aes-256-cbc', KEY: process.env.PROJECT_ENCRYPTION_KEY || '0123456789abcdef0123456789abcdef' }
+// Configuration constants
+const ALGO = 'aes-256-cbc'
+const KEY = process.env.PROJECT_ENCRYPTION_KEY
 
-const { ALGO, KEY } = CRYPTOGRAPHY_CONFIG
+// Check that the encryption key is set
+if (!KEY) {
+  throw new Error('Encryption key is not set in the environment variables.')
+}
 
+// Generate a 16-byte initialization vector
+const generateIV = () => randomString.generate(16)
+
+// Get encryption key; use the user-provided key or fall back to the environment key
+const getKey = userKey => userKey || KEY
+
+// Encrypt data with AES-256-CBC
 const encrypt = (data, userKey) => {
-  const thisKEY = userKey || KEY
+  if (typeof data !== 'object' || Object.keys(data).length === 0) {
+    throw new TypeError('Data should be a non-empty object.')
+  }
 
-  const iv = randomString.generate(16)
-  const rawCipherData = crypto.createCipheriv(ALGO, thisKEY, iv)
-  let cipherText = rawCipherData.update(JSON.stringify(data), 'utf8', 'hex')
-  cipherText += rawCipherData.final('hex')
+  const iv = generateIV()
+  const thisKEY = getKey(userKey)
+  const cipher = crypto.createCipheriv(ALGO, thisKEY, iv)
+  let cipherText = cipher.update(JSON.stringify(data), 'utf8', 'hex')
+  cipherText += cipher.final('hex')
+
   return { IV: iv, encryptedData: cipherText }
 }
 
-const decrypt = (iv, data, userKey) => {
-  const thisKEY = userKey || KEY
-  if (typeof iv === 'object') return 'iv can\'t be object, it should be string.'
-  if (iv === null || iv === undefined || iv === '') return 'Invalid iv to decrypt'
-  if (data === null || data === undefined || data === '' || data === '') return 'Invalid data to decrypt'
-  const decryptedData = crypto.createDecipheriv(ALGO, thisKEY, iv)
-  const decryptedText = decryptedData.update(data, 'hex', 'utf8')
+// Decrypt data with AES-256-CBC
+const decrypt = (iv, encryptedData, userKey) => {
+  if (typeof iv !== 'string' || !iv) {
+    throw new Error('Invalid IV: Must be a non-empty string.')
+  }
+  if (!encryptedData) {
+    throw new Error('Invalid encrypted data: Data to decrypt cannot be empty.')
+  }
 
-  return JSON.parse(decryptedText + decryptedData.final('utf8'))
+  const thisKEY = getKey(userKey)
+  const decipher = crypto.createDecipheriv(ALGO, thisKEY, iv)
+  let decryptedText = decipher.update(encryptedData, 'hex', 'utf8')
+
+  try {
+    decryptedText += decipher.final('utf8')
+    return JSON.parse(decryptedText)
+  } catch (e) {
+    throw new Error('Failed to parse decrypted data as JSON.')
+  }
 }
 
 module.exports = { encrypt, decrypt }
