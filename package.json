@@ -1,0 +1,24 @@
+{
+  "name": "aes-256-cbc-cryptography",
+  "version": "1.0.0",
+  "description": "A simple encryption and decryption module for your applications.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/belle-vie-cryptography.git"
+  },
+  "author": "Your Name <you@example.com>",
+  "license": "ISC",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "randomstring": "^1.2.1"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/belle-vie-cryptography/issues"
+  },
+  "homepage": "https://github.com/yourusername/belle-vie-cryptography#readme"
+}
